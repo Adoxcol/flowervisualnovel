@@ -1140,3 +1140,29 @@ input, button, select, textarea {
         padding-right: max(20px, env(safe-area-inset-right));
     }
 }
+
+/* Desktop screens - prevent character cutoff */
+@media (min-width: 1025px) {
+    .character-portrait {
+        width: 35vw;
+        height: 70vh;
+        bottom: 0;
+    }
+    
+    #character-left {
+        left: 0;
+        width: 35vw;
+        height: 70vh;
+    }
+    
+    #character-right {
+        right: 0;
+        width: 35vw;
+        height: 70vh;
+    }
+    
+    #dialogue-box {
+        width: 80%;
+        max-height: 300px;
+    }
+}
