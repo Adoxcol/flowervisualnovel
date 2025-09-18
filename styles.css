@@ -170,7 +170,7 @@ body {
 #character-left {
     left: 20px;
     width: min(35vw, 300px);
-    height: min(70vh, 500px);
+    height: min(40vh, 500px);
     max-width: 300px;
     max-height: 500px;
 }
@@ -178,7 +178,7 @@ body {
 #character-right {
     right: 20px;
     width: min(35vw, 300px);
-    height: min(70vh, 500px);
+    height: min(50vh, 500px);
     max-width: 300px;
     max-height: 500px;
 }
@@ -426,6 +426,7 @@ body {
     right: 20px;
     display: flex;
     gap: 10px;
+    z-index: 1000;
 }
 
 .menu-btn {
@@ -855,6 +856,25 @@ input, button, select, textarea {
     font-size: 16px;
 }
 
+/* iPhone 13 specific optimizations */
+@media (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
+    .character-portrait {
+        width: min(32vw, 240px);
+        height: min(55vh, 320px);
+    }
+    
+    #dialogue-box {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+    
+    .choice-btn {
+        padding: 14px 18px;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+}
+
 /* Mobile Landscape (Small screens) */
 @media (max-width: 480px) {
     body {
@@ -960,12 +980,13 @@ input, button, select, textarea {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 5px;
+        z-index: 1000;
     }
     
     .menu-btn {
         padding: 8px 12px;
         font-size: 12px;
-        min-height: 36px;
+        min-height: 44px;
         min-width: 44px;
     }
     
@@ -1088,6 +1109,7 @@ input, button, select, textarea {
         right: 10px;
         flex-direction: row;
         gap: 8px;
+        z-index: 1000;
     }
     
     .menu-btn {
@@ -1247,6 +1269,7 @@ input, button, select, textarea {
         top: 5px;
         right: 5px;
         gap: 4px;
+        z-index: 1000;
     }
     
     .menu-btn {
@@ -1291,38 +1314,45 @@ input, button, select, textarea {
     #menu-container {
         top: max(10px, env(safe-area-inset-top));
         right: max(10px, env(safe-area-inset-right));
+        z-index: 1000;
     }
     
     #choice-container {
         padding-left: max(20px, env(safe-area-inset-left));
         padding-right: max(20px, env(safe-area-inset-right));
     }
+    
+    #title-screen {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
 }
 
 /* Desktop screens - prevent character cutoff */
 @media (min-width: 1025px) {
     .character-portrait {
-        width: min(30vw, 350px);
-        height: min(65vh, 500px);
-        max-width: 350px;
-        max-height: 500px;
+        width: min(18vw, 220px);
+        height: min(45vh, 350px);
+        max-width: 220px;
+        max-height: 350px;
         bottom: 0;
     }
     
     #character-left {
         left: 20px;
-        width: min(30vw, 350px);
-        height: min(65vh, 500px);
-        max-width: 350px;
-        max-height: 500px;
+        width: min(18vw, 220px);
+        height: min(45vh, 350px);
+        max-width: 220px;
+        max-height: 350px;
     }
     
     #character-right {
         right: 20px;
-        width: min(30vw, 350px);
-        height: min(65vh, 500px);
-        max-width: 350px;
-        max-height: 500px;
+        width: min(18vw, 220px);
+        height: min(45vh, 350px);
+        max-width: 220px;
+        max-height: 350px;
     }
     
     #dialogue-box {

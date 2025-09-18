@@ -40,7 +40,7 @@ class VisualNovel {
 
         // Audio system
         this.currentMusic = null;
-        this.musicVolume = 0.5;
+        this.musicVolume = 0.4;
         this.isMusicEnabled = true;
 
         // Initialize
@@ -1000,6 +1000,12 @@ class VisualNovel {
     }
 
     showEndingSequence(endingType) {
+        // Clear any existing event handlers to prevent conflicts
+        if (this.dialogueBox) {
+            this.dialogueBox.onclick = null;
+        }
+        document.onkeydown = null;
+        
         const endings = {
             low: [
                 { character: 'narrator', text: "As the days pass, you and Mahmood part ways, but something lingers in the air..." },
@@ -1066,12 +1072,17 @@ class VisualNovel {
                 const waitForContinue = () => {
                     if (this.canAdvanceDialogue()) {
                         const continueHandler = () => {
-                            this.dialogueBox.onclick = null;
+                            // Clear handlers before proceeding
+                            if (this.dialogueBox) {
+                                this.dialogueBox.onclick = null;
+                            }
                             document.onkeydown = null;
                             showNextDialogue();
                         };
 
-                        this.dialogueBox.onclick = continueHandler;
+                        if (this.dialogueBox) {
+                            this.dialogueBox.onclick = continueHandler;
+                        }
                         document.onkeydown = (e) => {
                             if (e.key === "Enter" || e.key === " ") {
                                 e.preventDefault();
@@ -1084,7 +1095,16 @@ class VisualNovel {
                 };
                 waitForContinue();
             } else {
-                this.showRestartOption();
+                // Clear all handlers before showing letter
+                if (this.dialogueBox) {
+                    this.dialogueBox.onclick = null;
+                }
+                document.onkeydown = null;
+                
+                // Show the ending letter before restart option
+                setTimeout(() => {
+                    this.showEndingLetter(endingType);
+                }, 1000);
             }
         };
 
@@ -1131,6 +1151,118 @@ class VisualNovel {
                 if (callback) callback();
             }
         }, speed);
+    }
+
+    showEndingLetter(endingType) {
+        const letterContent = {
+            low: {
+                title: "A Letter from Mahmood",
+                text: `My dearest ${this.gameState.playerName},
+
+I hope this letter finds you well. I've been sitting in our garden every evening, watching the cherry blossoms dance in the breeze, and I can't help but think of you.
+
+I know our time together was brief, and perhaps I wasn't able to express my feelings as clearly as I hoped. But I want you to know that meeting you changed something in me. Your smile, your laughter, the way you looked at the flowers with such wonder – it all made the garden feel more alive than it ever had before.
+
+I don't expect anything from you, and I don't want to burden you with my feelings. I just wanted you to know that you brought light into my world, even if it was just for a moment.
+
+The flowers here will always remind me of you. And if someday you find yourself walking past this garden again, know that you'll always be welcome here.
+
+Take care of yourself, and may your days be filled with as much beauty as you brought to mine.`
+            },
+            medium: {
+                title: "A Letter from Your Garden Friend",
+                text: `Dear ${this.gameState.playerName},
+
+As I write this, I'm surrounded by the flowers we've come to love together. The roses are blooming more beautifully than ever, and I like to think it's because they've felt the warmth of our friendship.
+
+These past weeks have been wonderful. Our conversations, our shared silences, the way we've learned to appreciate the small moments together – it all means more to me than you might realize.
+
+I find myself looking forward to our meetings with a joy I haven't felt in years. There's something special about the way you see the world, the way you make even the simplest moments feel meaningful.
+
+I wanted to put these feelings into words because sometimes the heart speaks more clearly through a letter than through spoken words. You've become such an important part of my life, and I hope I've become a meaningful part of yours too.
+
+Whatever the future holds, I'm grateful for this time we've shared. The garden is more beautiful because you're in it, and my life is richer because you're in it too.
+
+Looking forward to many more sunsets together among the flowers.`
+            },
+            high: {
+                title: "A Love Letter to My Heart",
+                text: `My beloved ${this.gameState.playerName},
+
+How do I begin to express what you mean to me? Every morning when I wake up, my first thought is of you. Every evening when the stars appear, I wish you were here to share their beauty with me.
+
+You've transformed not just this garden, but my entire world. Before you, I was content to tend to flowers in solitude. Now, I can't imagine a single day without your laughter, your touch, your presence beside me.
+
+The way you look at me makes me feel like I could move mountains. The way you smile makes every flower in this garden pale in comparison. The way you love makes me believe in magic, in fairy tales, in happily ever after.
+
+I want to spend every sunrise and sunset with you. I want to plant new flowers together and watch them grow, just like our love has grown. I want to build a life with you that's as beautiful and enduring as this garden we both cherish.
+
+You are my heart, my home, my everything. And if you'll have me, I want to be yours for all the seasons to come.
+
+This garden brought us together, but it's your love that makes it – and me – complete.
+
+Forever and always yours,`
+            }
+        };
+
+        const letter = letterContent[endingType];
+        if (!letter) return;
+
+        // Get letter elements
+        const letterDisplay = document.getElementById('letter-display');
+        const letterTitle = document.getElementById('letter-title');
+        const letterText = document.getElementById('letter-text');
+        const closeButton = document.getElementById('close-letter');
+
+        if (!letterDisplay || !letterTitle || !letterText) return;
+
+        // Set letter content
+        letterTitle.textContent = letter.title;
+        letterText.textContent = '';
+
+        // Show letter display
+        letterDisplay.classList.remove('hidden');
+        letterDisplay.classList.add('visible');
+
+        // Hide dialogue box and characters
+        if (this.dialogueBox) {
+            this.dialogueBox.style.display = 'none';
+        }
+        this.showCharacter(null); // Hide characters
+
+        // Start typewriter effect for letter content
+        this.typewriterInLetter('letter-text', letter.text, () => {
+            // After letter is fully typed, set up close functionality
+            const closeHandler = () => {
+                letterDisplay.classList.remove('visible');
+                letterDisplay.classList.add('hidden');
+                
+                // Show restart option after closing letter
+                setTimeout(() => {
+                    this.showRestartOption();
+                }, 500);
+            };
+
+            // Set up close button
+            if (closeButton) {
+                closeButton.onclick = closeHandler;
+            }
+
+            // Allow clicking anywhere on letter to close
+            letterDisplay.onclick = (e) => {
+                if (e.target === letterDisplay) {
+                    closeHandler();
+                }
+            };
+
+            // Allow ESC key to close
+            document.onkeydown = (e) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeHandler();
+                }
+            };
+        });
     }
 
     saveGame() {
