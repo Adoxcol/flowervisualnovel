@@ -74,15 +74,15 @@ body {
 .character-portrait {
     position: absolute;
     bottom: 0;
-    width: 300px;
-    height: 400px;
-    background-size: contain;
+    width: 45vw;
+    height: 80vh;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: bottom center;
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
     transform: translateY(20px) scale(0.95);
-    z-index: 5;
+    z-index: 2;
 }
 
 .character-portrait.active {
@@ -98,11 +98,15 @@ body {
 }
 
 #character-left {
-    left: 50px;
+    left: 0;
+    width: 45vw;
+    height: 80vh;
 }
 
 #character-right {
-    right: 50px;
+    right: 0;
+    width: 45vw;
+    height: 80vh;
 }
 
 /* UI Container */
@@ -117,25 +121,25 @@ body {
 /* Dialogue Box */
 #dialogue-box {
     position: fixed;
-    bottom: 20px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    width: 90%;
-    max-width: 800px;
+    width: 80%;
+    max-width: 1000px;
     max-height: 350px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.9));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 250, 0.95));
     color: #2c3e50;
-    padding: 25px 30px;
-    border-radius: 20px;
+    padding: 35px 45px;
+    border-radius: 30px;
     font-family: 'Segoe UI', 'Roboto', sans-serif;
     box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 0 2px rgba(255, 255, 255, 0.2) inset;
+    backdrop-filter: blur(20px);
+    border: 3px solid rgba(255, 255, 255, 0.4);
     transition: all 0.3s ease;
     animation: slideInFromBottom 0.5s ease-out;
-    z-index: 10;
+    z-index: 15;
     overflow-y: auto;
 }
 
@@ -190,16 +194,16 @@ body {
 /* Choice Buttons */
 #choice-container {
     position: fixed;
-    bottom: 140px;
+    bottom: 200px;
     left: 50%;
     transform: translateX(-50%);
-    width: 90%;
+    width: 70%;
     max-width: 800px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    z-index: 15;
-    padding: 0 30px;
+    gap: 18px;
+    z-index: 20;
+    padding: 0 20px;
 }
 
 .choice-btn {
@@ -326,14 +330,83 @@ body {
     height: 100%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     z-index: 10;
     transition: opacity 0.5s ease;
     color: white;
     text-align: center;
     overflow: hidden;
+    padding: 0 2rem;
+}
+
+/* Title screen content container */
+.title-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+/* Character portraits on title screen */
+.title-character-left,
+.title-character-right {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.title-character-portrait {
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.title-character-portrait:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.title-character-left .title-character-portrait {
+    animation: slideInLeft 1s ease-out;
+}
+
+.title-character-right .title-character-portrait {
+    animation: slideInRight 1s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 #title-screen::before {
@@ -595,9 +668,19 @@ body {
 
 /* Landscape small screen adjustments */
 body.landscape-small .character-portrait {
-    width: 80px;
-    height: 120px;
-    bottom: 60px;
+    width: 30vw;
+    height: 80vh;
+    bottom: 0;
+}
+
+body.landscape-small #character-left {
+    width: 30vw;
+    height: 80vh;
+}
+
+body.landscape-small #character-right {
+    width: 30vw;
+    height: 80vh;
 }
 
 body.landscape-small #dialogue-box {
@@ -647,17 +730,21 @@ input, button, select, textarea {
     }
     
     .character-portrait {
-        width: 120px;
-        height: 180px;
-        bottom: 120px;
+        width: 40vw;
+        height: 70vh;
+        bottom: 0;
     }
     
     #character-left {
-        left: 5px;
+        left: 0;
+        width: 40vw;
+        height: 70vh;
     }
     
     #character-right {
-        right: 5px;
+        right: 0;
+        width: 40vw;
+        height: 70vh;
     }
     
     #dialogue-box {
@@ -697,22 +784,37 @@ input, button, select, textarea {
         min-height: 44px; /* iOS touch target minimum */
     }
     
-    #title-screen h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    #title-screen p {
-        font-size: 1rem;
-        margin-bottom: 2rem;
-    }
-    
-    .title-btn {
-        padding: 12px 24px;
-        font-size: 16px;
-        margin: 8px;
-        min-height: 44px;
-    }
+    #title-screen {
+         flex-direction: column;
+         padding: 1rem;
+         gap: 1rem;
+     }
+     
+     .title-character-left,
+     .title-character-right {
+         display: none; /* Hide character portraits on small screens */
+     }
+     
+     .title-content {
+         flex: none;
+     }
+     
+     #title-screen h1 {
+         font-size: 2.5rem;
+         margin-bottom: 1rem;
+     }
+     
+     #title-screen p {
+         font-size: 1rem;
+         margin-bottom: 2rem;
+     }
+     
+     .title-btn {
+         padding: 12px 24px;
+         font-size: 16px;
+         margin: 8px;
+         min-height: 44px;
+     }
     
     #menu-container {
         top: 5px;
@@ -763,17 +865,21 @@ input, button, select, textarea {
 /* Mobile Portrait (Medium screens) */
 @media (min-width: 481px) and (max-width: 768px) {
     .character-portrait {
-        width: 180px;
-        height: 240px;
-        bottom: 140px;
+        width: 42vw;
+        height: 75vh;
+        bottom: 0;
     }
     
     #character-left {
-        left: 10px;
+        left: 0;
+        width: 42vw;
+        height: 75vh;
     }
     
     #character-right {
-        right: 10px;
+        right: 0;
+        width: 42vw;
+        height: 75vh;
     }
     
     #dialogue-box {
@@ -806,22 +912,32 @@ input, button, select, textarea {
         min-height: 48px;
     }
     
-    #title-screen h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1.2rem;
-    }
-    
-    #title-screen p {
-        font-size: 1.2rem;
-        margin-bottom: 2.5rem;
-    }
-    
-    .title-btn {
-        padding: 14px 28px;
-        font-size: 17px;
-        margin: 10px;
-        min-height: 48px;
-    }
+    #title-screen {
+         padding: 1.5rem;
+         gap: 1rem;
+     }
+     
+     .title-character-portrait {
+         width: 150px;
+         height: 200px;
+     }
+     
+     #title-screen h1 {
+         font-size: 3.5rem;
+         margin-bottom: 1.2rem;
+     }
+     
+     #title-screen p {
+         font-size: 1.2rem;
+         margin-bottom: 2.5rem;
+     }
+     
+     .title-btn {
+         padding: 14px 28px;
+         font-size: 17px;
+         margin: 10px;
+         min-height: 48px;
+     }
     
     #menu-container {
         top: 10px;
@@ -861,16 +977,21 @@ input, button, select, textarea {
 /* Tablet Portrait */
 @media (min-width: 769px) and (max-width: 1024px) {
     .character-portrait {
-        width: 250px;
-        height: 350px;
+        width: 44vw;
+        height: 78vh;
+        bottom: 0;
     }
     
     #character-left {
-        left: 30px;
+        left: 0;
+        width: 44vw;
+        height: 78vh;
     }
     
     #character-right {
-        right: 30px;
+        right: 0;
+        width: 44vw;
+        height: 78vh;
     }
     
     #dialogue-box {
@@ -884,25 +1005,40 @@ input, button, select, textarea {
     }
     
     .choice-btn {
-        min-height: 50px;
-        font-size: 16px;
-    }
-    
-    .title-btn {
-        min-height: 50px;
-    }
-    
-    .menu-btn {
-        min-height: 42px;
-    }
+         min-height: 50px;
+         font-size: 16px;
+     }
+     
+     .title-btn {
+         min-height: 50px;
+     }
+     
+     .menu-btn {
+         min-height: 42px;
+     }
+     
+     .title-character-portrait {
+         width: 200px;
+         height: 280px;
+     }
 }
 
 /* Landscape orientation adjustments */
 @media (orientation: landscape) and (max-height: 600px) {
     .character-portrait {
-        width: 100px;
-        height: 150px;
-        bottom: 80px;
+        width: 35vw;
+        height: 85vh;
+        bottom: 0;
+    }
+    
+    #character-left {
+        width: 35vw;
+        height: 85vh;
+    }
+    
+    #character-right {
+        width: 35vw;
+        height: 85vh;
     }
     
     #dialogue-box {
