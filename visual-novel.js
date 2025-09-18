@@ -287,7 +287,7 @@ class VisualNovel {
 
     loadStory() {
         this.story = [
-            // Scene 1: Garden Meeting
+            // Scene 1: Garden Meeting - Enhanced
             {
                 background: 'garden',
                 music: 'peaceful',
@@ -296,11 +296,17 @@ class VisualNovel {
                     { character: 'narrator', text: "You walk along a peaceful path, surrounded by vibrant blooms and soft hum of bees." },
                     { character: this.gameState.playerName, text: "What a beautiful day... The flowers here are breathtaking.", portrait: 'player' },
                     { character: 'narrator', text: "Suddenly, you hear footsteps behind you. A young man with kind eyes and messy hair approaches." },
+                    { character: 'narrator', text: "He stops a few feet away, pretending to tend to some roses, but you catch him stealing glances at you." },
                     { character: this.gameState.guyName, text: "Excuse me! I couldn't help but notice you admiring the flowers.", portrait: 'guy' },
+                    { character: 'narrator', text: "His cheeks turn slightly pink as he realizes he's been caught staring." },
                     { character: this.gameState.guyName, text: "I'm Mahmood. I take care of this garden. Are you new here?", portrait: 'guy' },
                     { character: 'narrator', text: "A gentle breeze ruffles your hair, and a petal lands softly on your shoulder." },
+                    { character: 'narrator', text: "Mahmood's eyes follow the petal's path, lingering on your face for just a moment too long." },
                     { character: this.gameState.guyName, text: "Oh! A cherry blossom for you… consider it a gift from the garden.", portrait: 'guy' },
                     { character: this.gameState.playerName, text: "Haha, thank you! It's beautiful… just like this place.", portrait: 'player' },
+                    { character: 'narrator', text: "He smiles warmly, his eyes crinkling at the corners. You notice how his hair catches the sunlight." },
+                    { character: this.gameState.guyName, text: "You have such a lovely smile... I mean, the garden looks lovely when you smile at it!", portrait: 'guy' },
+                    { character: 'narrator', text: "He fumbles with his words, clearly flustered by his own boldness." },
                     { character: '', text: "How do you respond?", choices: [
                         { text: "Yes, I'm just visiting. This place is magical!", effect: { relationship: 1 } },
                         { text: "I'm looking for a quiet place to think.", effect: { relationship: 0 } },
@@ -309,19 +315,25 @@ class VisualNovel {
                 ]
             },
 
-            // Scene 2: Music & Common Interests
+            // Scene 2: Music & Common Interests - Enhanced
             {
                 background: 'garden',
                 music: 'gentle',
                 dialogues: [
                     { character: this.gameState.guyName, text: "I'm glad you like it here. Every flower has its own story... just like people.", portrait: 'guy' },
+                    { character: 'narrator', text: "As he speaks, you notice how passionate he becomes, his eyes lighting up with genuine care." },
                     { character: this.gameState.playerName, text: "That's beautiful. You must really love what you do.", portrait: 'player' },
+                    { character: 'narrator', text: "While you're looking at the flowers, Mahmood steals another glance at you, a soft smile playing on his lips." },
                     { character: this.gameState.guyName, text: "I do! And when I work, I usually listen to music... it helps me feel alive.", portrait: 'guy' },
                     { character: this.gameState.playerName, text: "Really? What kind of music do you like?", portrait: 'player' },
                     { character: this.gameState.guyName, text: "Mostly soft indie and old classics. Songs that make you feel something real.", portrait: 'guy' },
                     { character: 'narrator', text: "He hums a soft tune as he tends to the flowers. Somehow, the melody matches your heartbeat." },
+                    { character: 'narrator', text: "You turn to watch him work, and he catches you looking. Both of you quickly look away, blushing." },
                     { character: this.gameState.playerName, text: "I love that song! Can you teach me how to play it?", portrait: 'player' },
                     { character: this.gameState.guyName, text: "Only if you promise to laugh at my terrible singing.", portrait: 'guy' },
+                    { character: 'narrator', text: "He starts humming again, this time more confidently, stealing glances to see your reaction." },
+                    { character: this.gameState.playerName, text: "Your voice is actually really nice... soothing, like the garden itself.", portrait: 'player' },
+                    { character: 'narrator', text: "His face lights up with the most genuine smile you've ever seen." },
                     { character: '', text: "How do you react?", choices: [
                         { text: "Blush and admit you love that kind of music too.", effect: { relationship: 2 } },
                         { text: "Smile and say it suits him.", effect: { relationship: 1 } },
@@ -330,17 +342,25 @@ class VisualNovel {
                 ]
             },
 
-            // Scene 3: Café
+            // Scene 3: Café - Enhanced
             {
                 background: 'cafe',
                 music: 'cozy',
                 dialogues: [
                     { character: 'narrator', text: "Later, you and Mahmood find a cozy café with a perfect view of the garden." },
                     { character: this.gameState.guyName, text: "I love this place. The owner lets me bring flowers for the tables.", portrait: 'guy' },
+                    { character: 'narrator', text: "As you sit across from each other, you notice how he keeps fidgeting with his napkin, nervous but happy." },
                     { character: this.gameState.guyName, text: "Your smile... it's even brighter than the blossoms. Sorry, was that too much?", portrait: 'guy' },
+                    { character: 'narrator', text: "He immediately covers his face with his hands, peeking through his fingers to gauge your reaction." },
                     { character: this.gameState.playerName, text: "Haha... No, it's sweet. But really, your hair looks amazing!", portrait: 'player' },
+                    { character: 'narrator', text: "He unconsciously runs his hand through his hair, making it even more endearingly messy." },
                     { character: this.gameState.guyName, text: "Maybe it's magic... or maybe it shines more because you're looking at me.", portrait: 'guy' },
                     { character: 'narrator', text: "You accidentally bump elbows while reaching for the same cookie. Both of you blush." },
+                    { character: 'narrator', text: "For a moment, neither of you moves away. The warmth of his arm against yours sends butterflies through your stomach." },
+                    { character: this.gameState.guyName, text: "Sorry! I... I didn't mean to... well, maybe I did mean to...", portrait: 'guy' },
+                    { character: 'narrator', text: "He's looking directly into your eyes now, completely forgetting about the cookie." },
+                    { character: this.gameState.playerName, text: "It's okay... I don't mind.", portrait: 'player' },
+                    { character: 'narrator', text: "The afternoon sun streams through the window, creating a golden halo around both of you." },
                     { character: '', text: "The air feels warm between you two. How do you reply?", choices: [
                         { text: "Blush and change the subject.", effect: { relationship: 1 } },
                         { text: "Playfully tease him back.", effect: { relationship: 2 } },
@@ -349,17 +369,25 @@ class VisualNovel {
                 ]
             },
 
-            // Scene 4: Rocky Moment
+            // Scene 4: Rocky Moment - Enhanced
             {
                 background: 'park',
                 music: 'tense',
                 dialogues: [
                     { character: 'narrator', text: "As the sun sets, a moment of silence lingers between you." },
+                    { character: 'narrator', text: "You're sitting on a park bench, watching the sky turn orange and pink." },
                     { character: this.gameState.guyName, text: "Sometimes I wonder... am I just boring you? Maybe you only came here for the flowers.", portrait: 'guy' },
+                    { character: 'narrator', text: "His voice is quieter than usual, and he's staring at his hands instead of looking at you." },
                     { character: this.gameState.playerName, text: "What? Why would you think that?", portrait: 'player' },
                     { character: this.gameState.guyName, text: "I don't know... you're so full of life. And me? I just water plants.", portrait: 'guy' },
                     { character: 'narrator', text: "He sighs, looking away, but you notice him nervously fiddling with a flower in his hand." },
+                    { character: 'narrator', text: "The flower is a small daisy - he must have picked it for you but lost the courage to give it." },
                     { character: this.gameState.playerName, text: "Hey… it's okay. I like spending time with you, really.", portrait: 'player' },
+                    { character: 'narrator', text: "You gently touch his hand, and he finally looks up at you with vulnerable, hopeful eyes." },
+                    { character: this.gameState.guyName, text: "I... I picked this for you earlier. But I thought you might think it's silly.", portrait: 'guy' },
+                    { character: 'narrator', text: "He holds out the slightly crumpled daisy, his cheeks red with embarrassment." },
+                    { character: this.gameState.playerName, text: "It's perfect. Just like this moment.", portrait: 'player' },
+                    { character: 'narrator', text: "His face transforms with relief and joy, like the sun breaking through clouds." },
                     { character: '', text: "How do you respond?", choices: [
                         { text: "Reassure him: 'I came here because you make this place special.'", effect: { relationship: 2 } },
                         { text: "Laugh softly: 'You're silly, Mahmood.'", effect: { relationship: 0 } },
@@ -368,17 +396,26 @@ class VisualNovel {
                 ]
             },
 
-            // Scene 5: Romantic Night Walk
+            // Scene 5: Romantic Night Walk - Enhanced
             {
                 background: 'evening',
                 music: 'romantic',
                 dialogues: [
                     { character: 'narrator', text: "The stars twinkle above as you and Mahmood walk slowly under the night sky." },
+                    { character: 'narrator', text: "The garden looks magical in the moonlight, with soft shadows dancing between the flowers." },
                     { character: this.gameState.guyName, text: "Your eyes... they shine brighter than these stars. And your laughter... I could listen to it forever.", portrait: 'guy' },
+                    { character: 'narrator', text: "He stops walking and turns to face you completely, his expression soft and sincere." },
                     { character: this.gameState.playerName, text: "And you... your hair, your music, your soul. You're unforgettable.", portrait: 'player' },
                     { character: 'narrator', text: "He gently tucks a flower behind your ear. Your fingers accidentally touch his hand. Both of you freeze and laugh nervously." },
+                    { character: 'narrator', text: "But this time, neither of you pulls away. His hand lingers near your cheek." },
                     { character: this.gameState.guyName, text: "Your laugh… it's even more beautiful than I imagined.", portrait: 'guy' },
+                    { character: 'narrator', text: "He's looking at you like you're the most precious thing in his garden." },
                     { character: this.gameState.playerName, text: "Stop… you're making me blush!", portrait: 'player' },
+                    { character: 'narrator', text: "The moonlight catches the sparkle in both your eyes as you stand close together." },
+                    { character: this.gameState.guyName, text: "I... I've never felt this way before. Being with you feels like coming home.", portrait: 'guy' },
+                    { character: 'narrator', text: "A shooting star streaks across the sky above you, as if the universe is blessing this moment." },
+                    { character: this.gameState.playerName, text: "Make a wish...", portrait: 'player' },
+                    { character: this.gameState.guyName, text: "I already have everything I could wish for right here.", portrait: 'guy' },
                     { character: '', text: "What happens next?", choices: [
                         { text: "Take his hand and smile softly.", effect: { relationship: 2, gesture: 'handHold' } },
                         { text: "Step closer and hug him.", effect: { relationship: 2, gesture: 'hug' } },
@@ -470,7 +507,7 @@ class VisualNovel {
             this.dialogueBox.style.display = 'block';
         }
         
-        this.showCharacter(dialogue.portrait);
+        this.showCharacter(dialogue.portrait, dialogue.emotion);
 
         // Handle character name display
         if (this.characterName) {
@@ -488,6 +525,9 @@ class VisualNovel {
             clearInterval(this.currentTypewriterInterval);
             this.currentTypewriterInterval = null;
         }
+
+        // Trigger romantic effects based on dialogue content
+        this.triggerRomanticEffects(dialogue);
 
         this.typewriterEffect(dialogue.text);
 
@@ -671,19 +711,134 @@ class VisualNovel {
         }, 200);
     }
 
-    showCharacter(portrait) {
-        this.characterLeft?.classList.remove('active');
-        this.characterRight?.classList.remove('active');
+    showCharacter(portrait, emotion = 'normal') {
+        this.characterLeft?.classList.remove('active', 'staring', 'shy', 'blushing');
+        this.characterRight?.classList.remove('active', 'staring', 'shy', 'blushing');
         
         if (portrait === 'player') {
             if (this.characterLeft) {
                 this.characterLeft.style.backgroundImage = 'url("character.png")';
                 this.characterLeft.classList.add('active');
+                if (emotion) this.characterLeft.classList.add(emotion);
             }
         } else if (portrait === 'guy') {
             if (this.characterRight) {
                 this.characterRight.style.backgroundImage = 'url("guy.png")';
                 this.characterRight.classList.add('active');
+                if (emotion) this.characterRight.classList.add(emotion);
+            }
+        }
+    }
+
+    // Add subtle romantic moments and staring mechanics
+    addStaringMoment(starerPortrait, duration = 3000) {
+        const starer = starerPortrait === 'guy' ? this.characterRight : this.characterLeft;
+        const target = starerPortrait === 'guy' ? this.characterLeft : this.characterRight;
+        
+        if (starer && target) {
+            // Add staring class for visual effect
+            starer.classList.add('staring');
+            
+            // Add a subtle heart effect
+            this.createHeartEffect(starer);
+            
+            // Remove staring effect after duration
+            setTimeout(() => {
+                starer.classList.remove('staring');
+            }, duration);
+        }
+    }
+
+    createHeartEffect(element) {
+        const heart = document.createElement('div');
+        heart.innerHTML = '💕';
+        heart.style.position = 'absolute';
+        heart.style.fontSize = '20px';
+        heart.style.opacity = '0.8';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = '1000';
+        heart.style.animation = 'heartFloat 2s ease-out forwards';
+        
+        // Position near the character
+        const rect = element.getBoundingClientRect();
+        heart.style.left = (rect.left + rect.width / 2) + 'px';
+        heart.style.top = (rect.top + 20) + 'px';
+        
+        document.body.appendChild(heart);
+        
+        // Remove heart after animation
+        setTimeout(() => {
+            if (heart.parentNode) {
+                heart.parentNode.removeChild(heart);
+            }
+        }, 2000);
+    }
+
+    triggerShyMoment(character) {
+        const characterElement = character === 'player' ? this.characterLeft : this.characterRight;
+        if (characterElement) {
+            characterElement.classList.add('shy');
+            setTimeout(() => {
+                characterElement.classList.remove('shy');
+            }, 2000);
+        }
+    }
+
+    triggerBlushMoment(character) {
+        const characterElement = character === 'player' ? this.characterLeft : this.characterRight;
+        if (characterElement) {
+            characterElement.classList.add('blushing');
+            setTimeout(() => {
+                characterElement.classList.remove('blushing');
+            }, 3000);
+        }
+    }
+
+    triggerRomanticEffects(dialogue) {
+        const text = dialogue.text.toLowerCase();
+        
+        // Trigger staring moments based on dialogue content
+        if (text.includes('staring') || text.includes('glance') || text.includes('looking at') || 
+            text.includes('catches you looking') || text.includes('steals another glance') ||
+            text.includes('eyes follow') || text.includes('lingering on your face')) {
+            
+            if (dialogue.character === this.gameState.guyName || text.includes('mahmood')) {
+                setTimeout(() => this.addStaringMoment('guy'), 1000);
+            } else if (dialogue.character === this.gameState.playerName || text.includes('you turn to watch')) {
+                setTimeout(() => this.addStaringMoment('player'), 1000);
+            }
+        }
+        
+        // Trigger blushing moments
+        if (text.includes('blush') || text.includes('cheeks turn') || text.includes('face lights up') ||
+            text.includes('flustered') || text.includes('fumbles with his words')) {
+            
+            if (dialogue.character === this.gameState.guyName || text.includes('mahmood') || text.includes('his cheeks')) {
+                setTimeout(() => this.triggerBlushMoment('guy'), 500);
+            } else if (dialogue.character === this.gameState.playerName || text.includes('both of you')) {
+                setTimeout(() => this.triggerBlushMoment('player'), 500);
+                setTimeout(() => this.triggerBlushMoment('guy'), 700);
+            }
+        }
+        
+        // Trigger shy moments
+        if (text.includes('shy') || text.includes('nervous') || text.includes('quickly look away') ||
+            text.includes('fumbles') || text.includes('hesitant')) {
+            
+            if (dialogue.character === this.gameState.guyName || text.includes('mahmood')) {
+                setTimeout(() => this.triggerShyMoment('guy'), 800);
+            } else if (dialogue.character === this.gameState.playerName) {
+                setTimeout(() => this.triggerShyMoment('player'), 800);
+            }
+        }
+        
+        // Special romantic moments with heart effects
+        if (text.includes('smile') || text.includes('laugh') || text.includes('beautiful') ||
+            text.includes('lovely') || text.includes('magical') || text.includes('perfect')) {
+            
+            const heartTarget = dialogue.character === this.gameState.guyName ? this.characterRight : this.characterLeft;
+            if (heartTarget) {
+                setTimeout(() => this.createHeartEffect(heartTarget), 1500);
             }
         }
     }
@@ -807,108 +962,153 @@ class VisualNovel {
     }
 
     showEnding() {
-    this.setBackground('evening');
-    
-    if (this.characterName) {
-        this.characterName.textContent = 'The End';
-        this.characterName.style.display = 'block';
-    }
-    
-    if (this.continueIndicator) {
-        this.continueIndicator.style.display = 'none';
-    }
-
-    const endingText = "Your story has concluded. But there are letters for Simin...";
-    this.typewriterEffect(endingText);
-
-    // After the typewriter, show letters in the dialogue box
-    setTimeout(() => {
-        this.checkTypewriterAndShowLetters();
-    }, endingText.length * 30 + 500);
-}
-
-checkTypewriterAndShowLetters() {
-    if (!this.currentTypewriterInterval) {
-        this.showLettersSequence();
-    } else {
-        setTimeout(() => this.checkTypewriterAndShowLetters(), 100);
-    }
-}
-
-showLettersSequence() {
-    const letters = [
-        `Dear Simin,
-
-I've missed you so much, my princess. All I can think about is your smile, your eyes, your laughter… and it hurts knowing I haven't always been my best for you. Please forgive me, and keep shining that beautiful smile just for me.
-
-I wish I could be at your door right now with flowers, your favorite chocolates, and myself, just to see you and feel the warmth of your embrace. I keep falling for you, over and over, and all I want is another chance—to hold your hands and show you that together, we can reach for the stars.
-
-Yours always,
-Mahmood`,
-
-        `Dear Simin,
-
-I'm really sorry, my princess. I know I haven't always been the person you deserve, and it hurts me to think I might have upset you. I hope you can forgive me… and maybe still smile that beautiful smile just for me.
-
-I miss you more than I can say. I keep thinking about your eyes, your laughter, and the joy you bring into every moment. I wish I could be there right now, holding your hand, giving you a gentle hug, and telling you I'll do better… because you're worth it, always.
-
-Please give me another chance. I promise I'll try my hardest, and I hope we can find our way back to those little moments that make everything feel magical.
-
-Always,
-Mahmood`
-    ];
-
-    let index = 0;
-    const showNextLetter = () => {
-        if (index < letters.length) {
-            this.typewriterEffect(letters[index]);
-            index++;
-
-            // Wait for user click/Enter to continue
-            const waitForContinue = () => {
-                if (this.canAdvanceDialogue()) {
-                    this.dialogueBox.onclick = () => {
-                        this.dialogueBox.onclick = null;
-                        showNextLetter();
-                    };
-                    document.onkeydown = (e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            document.onkeydown = null;
-                            showNextLetter();
-                        }
-                    };
-                } else {
-                    setTimeout(waitForContinue, 200);
-                }
-            };
-            waitForContinue();
+        // Determine ending based on relationship level
+        const relationshipLevel = this.gameState.relationship;
+        let endingType = 'low'; // Default to low ending
+        
+        if (relationshipLevel >= 6) {
+            endingType = 'high'; // Happy ending
+        } else if (relationshipLevel >= 2) {
+            endingType = 'medium'; // Continue seeing each other
+        }
+        
+        console.log(`Relationship level: ${relationshipLevel}, Ending type: ${endingType}`);
+        
+        // Set appropriate background and music
+        if (endingType === 'high') {
+            this.setBackground('evening');
+            this.playMusic('romantic');
+        } else if (endingType === 'medium') {
+            this.setBackground('garden');
+            this.playMusic('gentle');
         } else {
-            this.showRestartOption();
+            this.setBackground('garden');
+            this.playMusic('peaceful');
         }
-    };
+        
+        if (this.characterName) {
+            this.characterName.textContent = 'The End';
+            this.characterName.style.display = 'block';
+        }
+        
+        if (this.continueIndicator) {
+            this.continueIndicator.style.display = 'none';
+        }
 
-    showNextLetter();
-}
-
-showRestartOption() {
-    this.typewriterEffect("✨ Thank you for playing! Would you like to start a new story?");
-
-    const choiceButtons = document.querySelectorAll('.choice-btn');
-    if (choiceButtons[0]) {
-        choiceButtons[0].textContent = 'Start New Story';
-        choiceButtons[0].style.display = 'block';
-        choiceButtons[0].onclick = () => location.reload();
+        // Show ending based on relationship level
+        this.showEndingSequence(endingType);
     }
 
-    for (let i = 1; i < choiceButtons.length; i++) {
-        if (choiceButtons[i]) {
-            choiceButtons[i].style.display = 'none';
-        }
+    showEndingSequence(endingType) {
+        const endings = {
+            low: [
+                { character: 'narrator', text: "As the days pass, you and Mahmood part ways, but something lingers in the air..." },
+                { character: 'narrator', text: "A week later, you receive a gentle message from him." },
+                { character: this.gameState.guyName, text: "I know we didn't connect the way I hoped, but I want you to know...", portrait: 'guy' },
+                { character: this.gameState.guyName, text: "I'll be in the garden every day, tending to the flowers and thinking of you.", portrait: 'guy' },
+                { character: this.gameState.guyName, text: "If you ever want to talk, or just enjoy the peaceful silence together...", portrait: 'guy' },
+                { character: this.gameState.guyName, text: "I'll be there, waiting. No pressure, no expectations. Just... hope.", portrait: 'guy' },
+                { character: 'narrator', text: "You look out your window toward the garden, touched by his gentle persistence." },
+                { character: 'narrator', text: "Perhaps someday, when you're ready, you'll find your way back to those cherry blossoms..." },
+                { character: 'narrator', text: "And maybe, just maybe, love will bloom in its own time. 🌸" }
+            ],
+            medium: [
+                { character: 'narrator', text: "Over the following weeks, you and Mahmood continue to meet in the garden." },
+                { character: 'narrator', text: "Your friendship grows slowly, like the flowers he tends so carefully." },
+                { character: this.gameState.guyName, text: "I'm glad we can spend time together like this. No rush, no pressure.", portrait: 'guy' },
+                { character: this.gameState.playerName, text: "Me too. There's something special about these quiet moments.", portrait: 'player' },
+                { character: 'narrator', text: "You walk together through the garden paths, sharing stories and comfortable silences." },
+                { character: this.gameState.guyName, text: "You know, I used to think love had to be dramatic, like in movies.", portrait: 'guy' },
+                { character: this.gameState.guyName, text: "But this... this feels real. Like we're writing our own story, one day at a time.", portrait: 'guy' },
+                { character: this.gameState.playerName, text: "I like our story. It's gentle, like your garden.", portrait: 'player' },
+                { character: 'narrator', text: "As the sun sets, you both know this is just the beginning." },
+                { character: 'narrator', text: "Your love story will continue to grow, season by season, bloom by bloom. 🌺" }
+            ],
+            high: [
+                { character: 'narrator', text: "Under the starlit sky, you and Mahmood stand close together in the garden." },
+                { character: 'narrator', text: "The air is filled with the sweet scent of night-blooming jasmine." },
+                { character: this.gameState.guyName, text: "I never believed in fairy tales until I met you.", portrait: 'guy' },
+                { character: this.gameState.playerName, text: "And I never knew a garden could hold so much magic.", portrait: 'player' },
+                { character: 'narrator', text: "He takes your hands gently, his eyes reflecting the moonlight." },
+                { character: this.gameState.guyName, text: "Would you... would you like to help me tend this garden? Together?", portrait: 'guy' },
+                { character: this.gameState.playerName, text: "I'd love nothing more. We'll make it the most beautiful garden in the world.", portrait: 'player' },
+                { character: 'narrator', text: "As you embrace under the stars, cherry blossoms fall around you like confetti." },
+                { character: 'narrator', text: "Your love has bloomed into something beautiful and eternal." },
+                { character: 'narrator', text: "And in this garden of dreams, your happily ever after begins. ✨💕🌸" }
+            ]
+        };
+
+        const endingDialogues = endings[endingType];
+        let currentDialogue = 0;
+
+        const showNextDialogue = () => {
+            if (currentDialogue < endingDialogues.length) {
+                const dialogue = endingDialogues[currentDialogue];
+                
+                // Show character portrait if specified
+                this.showCharacter(dialogue.portrait);
+                
+                // Handle character name display
+                if (this.characterName) {
+                    if (dialogue.character === 'narrator') {
+                        this.characterName.textContent = '';
+                        this.characterName.style.display = 'none';
+                    } else {
+                        this.characterName.textContent = dialogue.character;
+                        this.characterName.style.display = 'block';
+                    }
+                }
+
+                this.typewriterEffect(dialogue.text);
+                currentDialogue++;
+
+                // Wait for user input to continue
+                const waitForContinue = () => {
+                    if (this.canAdvanceDialogue()) {
+                        const continueHandler = () => {
+                            this.dialogueBox.onclick = null;
+                            document.onkeydown = null;
+                            showNextDialogue();
+                        };
+
+                        this.dialogueBox.onclick = continueHandler;
+                        document.onkeydown = (e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                continueHandler();
+                            }
+                        };
+                    } else {
+                        setTimeout(waitForContinue, 200);
+                    }
+                };
+                waitForContinue();
+            } else {
+                this.showRestartOption();
+            }
+        };
+
+        showNextDialogue();
     }
 
-    this.choiceContainer?.classList.remove('hidden');
-}
+    showRestartOption() {
+        this.typewriterEffect("✨ Thank you for playing! Would you like to start a new story?");
+
+        const choiceButtons = document.querySelectorAll('.choice-btn');
+        if (choiceButtons[0]) {
+            choiceButtons[0].textContent = 'Start New Story';
+            choiceButtons[0].style.display = 'block';
+            choiceButtons[0].onclick = () => location.reload();
+        }
+
+        for (let i = 1; i < choiceButtons.length; i++) {
+            if (choiceButtons[i]) {
+                choiceButtons[i].style.display = 'none';
+            }
+        }
+
+        this.choiceContainer?.classList.remove('hidden');
+    }
 
 
     typewriterInLetter(elementId, text, callback) {
