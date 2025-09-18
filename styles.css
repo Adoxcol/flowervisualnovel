@@ -1,0 +1,962 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    min-height: 100vh;
+    overflow: hidden;
+    animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+    0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); }
+    50% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%); }
+}
+
+/* Fade-in animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInFromBottom {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow {
+    0%, 100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+    50% { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.3); }
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Background Styling */
+#background-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.scene-background {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 50%, #90EE90 100%);
+    background-size: cover;
+    background-position: center;
+    transition: all 1s ease-in-out;
+}
+
+/* Character Portraits */
+#character-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.character-portrait {
+    position: absolute;
+    bottom: 0;
+    width: 300px;
+    height: 400px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    z-index: 5;
+}
+
+.character-portrait.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    animation: characterEntrance 0.8s ease-out;
+}
+
+@keyframes characterEntrance {
+    0% { opacity: 0; transform: translateY(30px) scale(0.9); }
+    50% { transform: translateY(-5px) scale(1.02); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#character-left {
+    left: 50px;
+}
+
+#character-right {
+    right: 50px;
+}
+
+/* UI Container */
+#ui-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+}
+
+/* Dialogue Box */
+#dialogue-box {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    max-height: 350px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.9));
+    color: #2c3e50;
+    padding: 25px 30px;
+    border-radius: 20px;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    animation: slideInFromBottom 0.5s ease-out;
+    z-index: 10;
+    overflow-y: auto;
+}
+
+#dialogue-box:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+#character-name {
+    font-weight: 700;
+    color: #e74c3c;
+    font-size: 22px;
+    margin-bottom: 12px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#dialogue-text {
+    color: #34495e;
+    font-size: 18px;
+    line-height: 1.8;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin-top: 8px;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+#continue-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: #ff69b4;
+    font-size: 20px;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+/* Choice Buttons */
+#choice-container {
+    position: fixed;
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 15;
+    padding: 0 30px;
+}
+
+.choice-btn {
+    display: block;
+    width: 100%;
+    padding: 16px 24px;
+    margin: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.9));
+    color: #2c3e50;
+    border: 2px solid rgba(52, 152, 219, 0.3);
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.2px;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideInChoice 0.5s ease-out forwards;
+    z-index: 20;
+}
+
+.choice-btn:nth-child(1) { animation-delay: 0.1s; }
+.choice-btn:nth-child(2) { animation-delay: 0.2s; }
+.choice-btn:nth-child(3) { animation-delay: 0.3s; }
+
+.choice-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.choice-btn:hover {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.05));
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    border-color: rgba(52, 152, 219, 0.5);
+    color: #2980b9;
+}
+
+.choice-btn:hover::before {
+    left: 100%;
+}
+
+.choice-btn:active {
+    transform: translateY(0);
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+@keyframes slideInChoice {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Letter Choice Buttons - Special styling for ending */
+.letter-choice-btn {
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 105, 180, 0.9)) !important;
+    border-color: rgba(255, 20, 147, 0.5) !important;
+    color: #8b0045 !important;
+    font-weight: 600 !important;
+}
+
+.letter-choice-btn:hover {
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.2), rgba(255, 105, 180, 0.15)) !important;
+    border-color: rgba(255, 20, 147, 0.7) !important;
+    color: #d1477a !important;
+}
+
+.letter-choice-btn::after {
+    content: ' 💌';
+}
+
+/* Menu Buttons */
+#menu-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.menu-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #ff69b4;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.menu-btn:hover {
+    background: #ff69b4;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Title Screen */
+#title-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: opacity 0.5s ease;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+#title-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+#title-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#title-screen h1 {
+    font-size: 4.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 1;
+}
+
+#title-screen p {
+    font-size: 1.4rem;
+    margin-bottom: 3rem;
+    opacity: 0.95;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+}
+
+.title-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 16px 32px;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 6px 20px rgba(102, 126, 234, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    letter-spacing: 0.5px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.title-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.title-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 10px 30px rgba(102, 126, 234, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.title-btn:hover::before {
+    left: 100%;
+}
+
+/* Letter Display Styles */
+#letter-display {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+#letter-display.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.letter-paper {
+    background: linear-gradient(135deg, #fdf6f0 0%, #f9f2ed 100%);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    position: relative;
+    overflow-y: auto;
+    border: 2px solid rgba(255, 192, 203, 0.3);
+    font-family: 'Georgia', serif;
+    color: #4a4a4a;
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+#letter-display.visible .letter-paper {
+    transform: translateY(0) scale(1);
+}
+
+.letter-paper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 40px;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(255, 192, 203, 0.3), transparent);
+}
+
+.letter-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #d63384;
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.letter-content {
+    line-height: 2;
+    font-size: 16px;
+    margin-bottom: 30px;
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+.letter-signature {
+    text-align: right;
+    font-style: italic;
+    color: #8b5a6b;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.letter-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.letter-close-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #ee5a52, #ff6b6b);
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Save/Load Success Message */
+.save-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(46, 204, 113, 0.95), rgba(39, 174, 96, 0.9));
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    animation: popIn 0.5s ease-out;
+    backdrop-filter: blur(10px);
+}
+
+@keyframes popIn {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Error message */
+.error-message {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.95), rgba(192, 57, 43, 0.9));
+}
+
+/* Mobile-First Responsive Design */
+
+/* Touch-friendly interactions */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow text selection for dialogue */
+#dialogue-text, .letter-content {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Prevent zoom on input focus */
+input, button, select, textarea {
+    font-size: 16px;
+}
+
+/* Mobile Landscape (Small screens) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .character-portrait {
+        width: 120px;
+        height: 180px;
+        bottom: 120px;
+    }
+    
+    #character-left {
+        left: 5px;
+    }
+    
+    #character-right {
+        right: 5px;
+    }
+    
+    #dialogue-box {
+        bottom: 10px;
+        width: 95%;
+        padding: 15px 20px;
+        max-height: 200px;
+        font-size: 14px;
+    }
+    
+    #character-name {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    #dialogue-text {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    #continue-indicator {
+        bottom: 8px;
+        right: 15px;
+        font-size: 16px;
+    }
+    
+    #choice-container {
+        bottom: 80px;
+        width: 95%;
+        padding: 0 10px;
+    }
+    
+    .choice-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        margin-bottom: 8px;
+        min-height: 44px; /* iOS touch target minimum */
+    }
+    
+    #title-screen h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    #title-screen p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .title-btn {
+        padding: 12px 24px;
+        font-size: 16px;
+        margin: 8px;
+        min-height: 44px;
+    }
+    
+    #menu-container {
+        top: 5px;
+        right: 5px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .menu-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-height: 36px;
+        min-width: 44px;
+    }
+    
+    .letter-paper {
+        width: 95%;
+        padding: 20px;
+        max-height: 85vh;
+        margin: 10px;
+    }
+    
+    .letter-header {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    
+    .letter-content {
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    
+    .letter-signature {
+        font-size: 14px;
+    }
+    
+    .letter-close-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* Mobile Portrait (Medium screens) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .character-portrait {
+        width: 180px;
+        height: 240px;
+        bottom: 140px;
+    }
+    
+    #character-left {
+        left: 10px;
+    }
+    
+    #character-right {
+        right: 10px;
+    }
+    
+    #dialogue-box {
+        bottom: 15px;
+        width: 92%;
+        padding: 20px 25px;
+        max-height: 280px;
+    }
+    
+    #character-name {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    #dialogue-text {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+    
+    #choice-container {
+        bottom: 100px;
+        width: 92%;
+        padding: 0 20px;
+    }
+    
+    .choice-btn {
+        padding: 14px 20px;
+        font-size: 15px;
+        margin-bottom: 10px;
+        min-height: 48px;
+    }
+    
+    #title-screen h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    #title-screen p {
+        font-size: 1.2rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .title-btn {
+        padding: 14px 28px;
+        font-size: 17px;
+        margin: 10px;
+        min-height: 48px;
+    }
+    
+    #menu-container {
+        top: 10px;
+        right: 10px;
+        flex-direction: row;
+        gap: 8px;
+    }
+    
+    .menu-btn {
+        padding: 10px 15px;
+        font-size: 13px;
+        min-height: 40px;
+    }
+    
+    .letter-paper {
+        width: 90%;
+        padding: 30px;
+        max-height: 80vh;
+    }
+    
+    .letter-header {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .letter-content {
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 25px;
+    }
+    
+    .letter-signature {
+        font-size: 16px;
+    }
+}
+
+/* Tablet Portrait */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .character-portrait {
+        width: 250px;
+        height: 350px;
+    }
+    
+    #character-left {
+        left: 30px;
+    }
+    
+    #character-right {
+        right: 30px;
+    }
+    
+    #dialogue-box {
+        width: 85%;
+        max-height: 320px;
+    }
+    
+    #choice-container {
+        width: 85%;
+        bottom: 120px;
+    }
+    
+    .choice-btn {
+        min-height: 50px;
+        font-size: 16px;
+    }
+    
+    .title-btn {
+        min-height: 50px;
+    }
+    
+    .menu-btn {
+        min-height: 42px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+    .character-portrait {
+        width: 100px;
+        height: 150px;
+        bottom: 80px;
+    }
+    
+    #dialogue-box {
+        bottom: 10px;
+        max-height: 150px;
+        padding: 12px 20px;
+    }
+    
+    #character-name {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    #dialogue-text {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+    
+    #choice-container {
+        bottom: 60px;
+        gap: 6px;
+    }
+    
+    .choice-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        min-height: 36px;
+    }
+    
+    #title-screen h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    #title-screen p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .title-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        margin: 6px;
+        min-height: 36px;
+    }
+    
+    #menu-container {
+        top: 5px;
+        right: 5px;
+        gap: 4px;
+    }
+    
+    .menu-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+        min-height: 32px;
+    }
+    
+    .letter-paper {
+        max-height: 90vh;
+        padding: 15px;
+    }
+    
+    .letter-header {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+    
+    .letter-content {
+        font-size: 12px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .character-portrait {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Safe area adjustments for notched devices */
+@supports (padding: max(0px)) {
+    #dialogue-box {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+        padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    
+    #menu-container {
+        top: max(10px, env(safe-area-inset-top));
+        right: max(10px, env(safe-area-inset-right));
+    }
+    
+    #choice-container {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+    }
+}

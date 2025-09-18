@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#667eea">
+    <title>Flower Garden Visual Novel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Background container -->
+        <div id="background-container">
+            <div id="background" class="scene-background"></div>
+        </div>
+        
+        <!-- Character container -->
+        <div id="character-container">
+            <div id="character-left" class="character-portrait"></div>
+            <div id="character-right" class="character-portrait"></div>
+        </div>
+        
+        <!-- UI Container -->
+        <div id="ui-container">
+            <!-- Dialogue box -->
+            <div id="dialogue-box">
+                <div id="character-name"></div>
+                <div id="dialogue-text"></div>
+                <div id="continue-indicator">▼</div>
+            </div>
+            
+            <!-- Choice buttons -->
+            <div id="choice-container" class="hidden">
+                <button class="choice-btn" id="choice1"></button>
+                <button class="choice-btn" id="choice2"></button>
+                <button class="choice-btn" id="choice3"></button>
+            </div>
+            
+            <!-- Menu buttons -->
+            <div id="menu-container">
+                <button id="save-btn" class="menu-btn">💾 Save</button>
+                <button id="load-btn" class="menu-btn">📁 Load</button>
+                <button id="settings-btn" class="menu-btn">⚙️ Settings</button>
+            </div>
+        </div>
+        
+        <!-- Title screen -->
+        <div id="title-screen">
+            <h1>🌸 Flower Garden Stories 🌸</h1>
+            <p>A Visual Novel Adventure</p>
+            <button id="start-btn" class="title-btn">Start Story</button>
+            <button id="continue-btn" class="title-btn">Continue</button>
+        </div>
+
+        <!-- Letter Display -->
+        <div id="letter-display" class="hidden">
+            <div class="letter-paper">
+                <button class="letter-close-btn" id="close-letter">×</button>
+                <div class="letter-header" id="letter-title">Letter from Mahmood</div>
+                <div class="letter-content" id="letter-text"></div>
+                <div class="letter-signature">With all my love,<br>Mahmood</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements for background music -->
+    <audio id="peaceful-music" loop preload="auto">
+        <source src="audio/peaceful.mp3" type="audio/mpeg">
+        <source src="audio/peaceful.ogg" type="audio/ogg">
+    </audio>
+    <audio id="gentle-music" loop preload="auto">
+        <source src="audio/gentle.mp3" type="audio/mpeg">
+        <source src="audio/gentle.ogg" type="audio/ogg">
+    </audio>
+    <audio id="cozy-music" loop preload="auto">
+        <source src="audio/cozy.mp3" type="audio/mpeg">
+        <source src="audio/cozy.ogg" type="audio/ogg">
+    </audio>
+    <audio id="tense-music" loop preload="auto">
+        <source src="audio/tense.mp3" type="audio/mpeg">
+        <source src="audio/tense.ogg" type="audio/ogg">
+    </audio>
+    <audio id="romantic-music" loop preload="auto">
+        <source src="audio/romantic.mp3" type="audio/mpeg">
+        <source src="audio/romantic.ogg" type="audio/ogg">
+    </audio>
+
+    <script src="visual-novel.js"></script>
+</body>
+</html>
