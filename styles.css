@@ -583,6 +583,50 @@ body {
     user-select: none;
 }
 
+/* Enhanced button active states for touch feedback */
+.choice-btn.active,
+.title-btn.active,
+.menu-btn.active,
+.letter-close-btn.active {
+    transform: scale(0.95);
+    opacity: 0.8;
+    transition: all 0.1s ease;
+}
+
+/* Landscape small screen adjustments */
+body.landscape-small .character-portrait {
+    width: 80px;
+    height: 120px;
+    bottom: 60px;
+}
+
+body.landscape-small #dialogue-box {
+    max-height: 120px;
+    padding: 10px 15px;
+    font-size: 12px;
+}
+
+body.landscape-small #character-name {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+body.landscape-small #dialogue-text {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+body.landscape-small #choice-container {
+    bottom: 50px;
+}
+
+body.landscape-small .choice-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-height: 32px;
+    margin-bottom: 4px;
+}
+
 /* Allow text selection for dialogue */
 #dialogue-text, .letter-content {
     -webkit-user-select: text;

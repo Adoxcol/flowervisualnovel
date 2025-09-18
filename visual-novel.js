@@ -35,21 +35,32 @@ class VisualNovel {
     }
 
     setupEventListeners() {
-        document.getElementById('start-btn')?.addEventListener('click', () => this.startGame());
-        document.getElementById('continue-btn')?.addEventListener('click', () => this.continueGame());
+        // Mobile detection
+        this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        this.isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         
-        // Fixed dialogue box click handler
-        this.dialogueBox?.addEventListener('click', () => {
-            if (this.canAdvanceDialogue()) {
-                this.nextDialogue();
-            }
-        });
+        // Button event listeners with touch support
+        this.addTouchAndClickListener('start-btn', () => this.startGame());
+        this.addTouchAndClickListener('continue-btn', () => this.continueGame());
+        this.addTouchAndClickListener('save-btn', () => this.saveGame());
+        this.addTouchAndClickListener('load-btn', () => this.loadGame());
+        this.addTouchAndClickListener('settings-btn', () => this.showSettings());
         
-        document.getElementById('save-btn')?.addEventListener('click', () => this.saveGame());
-        document.getElementById('load-btn')?.addEventListener('click', () => this.loadGame());
-        document.getElementById('settings-btn')?.addEventListener('click', () => this.showSettings());
+        // Enhanced dialogue box interaction with touch support
+        if (this.dialogueBox) {
+            this.addTouchAndClickListener(this.dialogueBox, () => {
+                if (this.canAdvanceDialogue()) {
+                    this.nextDialogue();
+                }
+            });
+        }
         
-        // Fixed keyboard handler
+        // Swipe gestures for mobile
+        if (this.isTouch) {
+            this.setupSwipeGestures();
+        }
+        
+        // Keyboard handler (for desktop)
         document.addEventListener('keydown', (e) => {
             if ((e.key === 'Enter' || e.key === ' ') && this.canAdvanceDialogue()) {
                 e.preventDefault();
@@ -77,6 +88,176 @@ class VisualNovel {
                 console.log(`Volume: ${Math.round(newVolume * 100)}%`);
             }
         });
+
+        // Prevent double-tap zoom on mobile
+        if (this.isMobile) {
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', (e) => {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    e.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                this.handleOrientationChange();
+            }, 100);
+        });
+
+        // Handle resize for responsive adjustments
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+    }
+
+    // Enhanced event listener that supports both touch and click
+    addTouchAndClickListener(element, callback) {
+        if (typeof element === 'string') {
+            element = document.getElementById(element);
+        }
+        
+        if (!element) return;
+
+        if (this.isTouch) {
+            // Touch events for mobile
+            element.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                element.classList.add('active');
+            }, { passive: false });
+            
+            element.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                element.classList.remove('active');
+                callback();
+            }, { passive: false });
+            
+            element.addEventListener('touchcancel', (e) => {
+                element.classList.remove('active');
+            });
+        } else {
+            // Click events for desktop
+            element.addEventListener('click', callback);
+        }
+    }
+
+    // Setup swipe gestures for mobile navigation
+    setupSwipeGestures() {
+        let startX = 0;
+        let startY = 0;
+        let endX = 0;
+        let endY = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        document.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            endY = e.changedTouches[0].clientY;
+            
+            const deltaX = endX - startX;
+            const deltaY = endY - startY;
+            const minSwipeDistance = 50;
+            
+            // Horizontal swipes
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                if (deltaX > 0) {
+                    // Swipe right - could be used for going back
+                    this.handleSwipeRight();
+                } else {
+                    // Swipe left - could be used for advancing
+                    this.handleSwipeLeft();
+                }
+            }
+            
+            // Vertical swipes
+            if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > minSwipeDistance) {
+                if (deltaY > 0) {
+                    // Swipe down - could show menu
+                    this.handleSwipeDown();
+                } else {
+                    // Swipe up - could hide menu
+                    this.handleSwipeUp();
+                }
+            }
+        }, { passive: true });
+    }
+
+    // Swipe gesture handlers
+    handleSwipeLeft() {
+        if (this.canAdvanceDialogue()) {
+            this.nextDialogue();
+        }
+    }
+
+    handleSwipeRight() {
+        // Could implement going back functionality
+        // For now, just advance dialogue like tap
+        if (this.canAdvanceDialogue()) {
+            this.nextDialogue();
+        }
+    }
+
+    handleSwipeDown() {
+        // Could show quick menu or settings
+    }
+
+    handleSwipeUp() {
+        // Could hide menu or show save options
+    }
+
+    // Handle orientation changes
+    handleOrientationChange() {
+        // Force a repaint to handle orientation-specific styles
+        document.body.style.display = 'none';
+        document.body.offsetHeight; // Trigger reflow
+        document.body.style.display = '';
+        
+        // Adjust dialogue box position if needed
+        this.adjustLayoutForOrientation();
+    }
+
+    // Handle window resize
+    handleResize() {
+        this.adjustLayoutForOrientation();
+    }
+
+    // Adjust layout based on screen size and orientation
+    adjustLayoutForOrientation() {
+        if (!this.isMobile) return;
+        
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const isSmallScreen = window.innerHeight < 600;
+        
+        // Adjust character portraits for landscape on small screens
+        if (isLandscape && isSmallScreen) {
+            document.body.classList.add('landscape-small');
+        } else {
+            document.body.classList.remove('landscape-small');
+        }
+        
+        // Ensure dialogue box is visible
+        if (this.dialogueBox && !this.dialogueBox.classList.contains('hidden')) {
+            this.ensureDialogueBoxVisible();
+        }
+    }
+
+    // Ensure dialogue box is properly positioned and visible
+    ensureDialogueBoxVisible() {
+        if (!this.dialogueBox) return;
+        
+        const rect = this.dialogueBox.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // If dialogue box is cut off, adjust its position
+        if (rect.bottom > viewportHeight) {
+            this.dialogueBox.style.bottom = '10px';
+        }
     }
 
     // Helper method to check if dialogue can advance
@@ -346,14 +527,20 @@ class VisualNovel {
             return;
         }
         
-        // Setup choice buttons
+        // Setup choice buttons with enhanced touch support
         choices.forEach((choice, index) => {
             if (choiceButtons[index]) {
                 choiceButtons[index].textContent = choice.text;
                 choiceButtons[index].style.display = 'block';
-                // Remove any existing event listeners and add new one
+                
+                // Remove any existing event listeners
                 choiceButtons[index].onclick = null;
-                choiceButtons[index].onclick = () => this.selectChoice(choice);
+                choiceButtons[index].ontouchstart = null;
+                choiceButtons[index].ontouchend = null;
+                choiceButtons[index].ontouchcancel = null;
+                
+                // Add new touch-friendly event listeners
+                this.addTouchAndClickListener(choiceButtons[index], () => this.selectChoice(choice));
             }
         });
         
@@ -366,6 +553,26 @@ class VisualNovel {
         
         // Show choice container
         this.choiceContainer?.classList.remove('hidden');
+        
+        // Ensure choices are visible on mobile
+        if (this.isMobile) {
+            setTimeout(() => {
+                this.ensureChoicesVisible();
+            }, 100);
+        }
+    }
+
+    // Ensure choice buttons are visible on mobile
+    ensureChoicesVisible() {
+        if (!this.choiceContainer) return;
+        
+        const rect = this.choiceContainer.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // If choice container is cut off, adjust its position
+        if (rect.bottom > viewportHeight) {
+            this.choiceContainer.style.bottom = '10px';
+        }
     }
 
     selectChoice(choice) {
