@@ -13,6 +13,17 @@ class VisualNovel {
             flags: {}
         };
 
+        // Background preloading system
+        this.backgroundCache = new Map();
+        this.backgroundsLoaded = false;
+        this.loadingProgress = 0;
+        this.backgroundUrls = {
+            garden: 'backgrounds/garden.svg',
+            cafe: 'backgrounds/cafe.svg',
+            park: 'backgrounds/park.svg',
+            evening: 'backgrounds/evening.svg'
+        };
+
         // DOM elements
         this.titleScreen = document.getElementById('title-screen');
         this.background = document.getElementById('background');
@@ -23,6 +34,9 @@ class VisualNovel {
         this.dialogueText = document.getElementById('dialogue-text');
         this.continueIndicator = document.getElementById('continue-indicator');
         this.choiceContainer = document.getElementById('choice-container');
+        this.loadingScreen = document.getElementById('loading-screen');
+        this.loadingProgress = document.getElementById('loading-progress');
+        this.loadingText = document.getElementById('loading-text');
 
         // Audio system
         this.currentMusic = null;
@@ -32,6 +46,8 @@ class VisualNovel {
         // Initialize
         this.setupEventListeners();
         this.loadStory();
+        this.showLoadingScreen();
+        this.preloadBackgrounds();
     }
 
     setupEventListeners() {
@@ -672,20 +688,122 @@ class VisualNovel {
         }
     }
 
+    // Background preloading methods
+    showLoadingScreen() {
+        if (this.loadingScreen) {
+            this.loadingScreen.style.display = 'flex';
+        }
+        if (this.titleScreen) {
+            this.titleScreen.style.display = 'none';
+        }
+    }
+
+    hideLoadingScreen() {
+        if (this.loadingScreen) {
+            this.loadingScreen.style.display = 'none';
+        }
+        if (this.titleScreen) {
+            this.titleScreen.style.display = 'flex';
+        }
+    }
+
+    updateLoadingProgress(progress, text) {
+        if (this.loadingProgress) {
+            this.loadingProgress.style.width = `${progress}%`;
+        }
+        if (this.loadingText) {
+            this.loadingText.textContent = text;
+        }
+    }
+
+    async preloadBackgrounds() {
+        const backgroundNames = Object.keys(this.backgroundUrls);
+        const totalBackgrounds = backgroundNames.length;
+        let loadedCount = 0;
+
+        console.log('Starting background preload...');
+        this.updateLoadingProgress(0, 'Loading backgrounds...');
+        
+        const loadPromises = backgroundNames.map(async (name) => {
+            try {
+                const url = this.backgroundUrls[name];
+                const img = new Image();
+                
+                return new Promise((resolve, reject) => {
+                    img.onload = () => {
+                        this.backgroundCache.set(name, url);
+                        loadedCount++;
+                        const progress = (loadedCount / totalBackgrounds) * 100;
+                        this.updateLoadingProgress(progress, `Loading ${name}... (${loadedCount}/${totalBackgrounds})`);
+                        console.log(`Loaded background: ${name} (${Math.round(progress)}%)`);
+                        resolve(name);
+                    };
+                    
+                    img.onerror = () => {
+                        console.warn(`Failed to load background: ${name}`);
+                        // Still cache the URL even if loading fails
+                        this.backgroundCache.set(name, url);
+                        loadedCount++;
+                        const progress = (loadedCount / totalBackgrounds) * 100;
+                        this.updateLoadingProgress(progress, `Loading ${name}... (${loadedCount}/${totalBackgrounds})`);
+                        resolve(name);
+                    };
+                    
+                    img.src = url;
+                });
+            } catch (error) {
+                console.error(`Error preloading background ${name}:`, error);
+                return name;
+            }
+        });
+
+        try {
+            await Promise.all(loadPromises);
+            this.backgroundsLoaded = true;
+            this.updateLoadingProgress(100, 'Loading complete!');
+            console.log('All backgrounds preloaded successfully!');
+            
+            // Wait a moment to show completion, then hide loading screen
+            setTimeout(() => {
+                this.hideLoadingScreen();
+            }, 500);
+        } catch (error) {
+            console.error('Error during background preloading:', error);
+            this.backgroundsLoaded = true; // Continue anyway
+            this.hideLoadingScreen();
+        }
+    }
+
     setBackground(backgroundType) {
         if (!this.background) return;
         
-        const backgrounds = {
-            garden: 'url(backgrounds/garden.svg)',
-            cafe: 'url(backgrounds/cafe.svg)',
-            park: 'url(backgrounds/park.svg)',
-            evening: 'url(backgrounds/evening.svg)'
-        };
+        // Use cached background if available, otherwise fallback to direct URL
+        const backgroundUrl = this.backgroundCache.get(backgroundType) || this.backgroundUrls[backgroundType] || this.backgroundUrls.garden;
         
-        this.background.style.backgroundImage = backgrounds[backgroundType] || backgrounds.garden;
+        this.background.style.backgroundImage = `url(${backgroundUrl})`;
         this.background.style.backgroundSize = 'cover';
         this.background.style.backgroundPosition = 'center';
         this.background.style.backgroundRepeat = 'no-repeat';
+        
+        // Add smooth transition effect
+        this.background.style.transition = 'background-image 0.5s ease-in-out';
+        
+        // Log background change for debugging
+        console.log(`Background changed to: ${backgroundType}`);
+    }
+
+    // Get preloading progress (useful for loading screens)
+    getLoadingProgress() {
+        return {
+            progress: this.loadingProgress,
+            isComplete: this.backgroundsLoaded,
+            loadedBackgrounds: Array.from(this.backgroundCache.keys())
+        };
+    }
+
+    // Check if a specific background is loaded
+    isBackgroundLoaded(backgroundType) {
+        return this.backgroundCache.has(backgroundType);
     }
 
     showEnding() {
