@@ -15,6 +15,9 @@
 </head>
 <body>
     <div id="game-container">
+        <!-- Always visible settings button -->
+        <button id="persistent-settings-btn" class="persistent-settings-btn">⚙️</button>
+        
         <!-- Loading screen -->
         <div id="loading-screen" class="loading-screen">
             <div class="loading-content">
@@ -84,6 +87,47 @@
                 <div class="letter-header" id="letter-title">Letter from Mahmood</div>
                 <div class="letter-content" id="letter-text"></div>
                 <div class="letter-signature">With all my love,<br>Mahmood</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="modal-close" id="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- Audio Settings -->
+                <div class="settings-section">
+                    <h3>🎵 Audio Settings</h3>
+                    <div class="setting-item">
+                        <label>Music: <span id="music-status">ON</span></label>
+                        <button id="toggle-music-btn" class="setting-btn">Toggle</button>
+                    </div>
+                    <div class="setting-item">
+                        <label>Volume: <span id="volume-level">30%</span></label>
+                        <div class="volume-controls">
+                            <button id="volume-down-btn" class="setting-btn">-</button>
+                            <button id="volume-up-btn" class="setting-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Debug Settings -->
+                <div class="settings-section">
+                    <h3>🔧 Debug Options</h3>
+                    <p class="debug-note">For testing purposes only</p>
+                    <div class="setting-item">
+                        <label>Skip to Ending:</label>
+                        <div class="debug-buttons">
+                            <button id="skip-low-ending" class="debug-btn">Low Ending</button>
+                            <button id="skip-medium-ending" class="debug-btn">Medium Ending</button>
+                            <button id="skip-high-ending" class="debug-btn">High Ending</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

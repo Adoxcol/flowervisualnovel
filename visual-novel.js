@@ -6,6 +6,7 @@ class VisualNovel {
         this.currentTypewriterInterval = null;
         this.isProcessing = false;
         this.isWaitingForChoice = false; // New flag to track choice state
+        this.gameEnded = false; // Flag to prevent dialogue after ending
         this.gameState = {
             playerName: "Simin",
             guyName: "Mahmood",
@@ -34,14 +35,18 @@ class VisualNovel {
         this.dialogueText = document.getElementById('dialogue-text');
         this.continueIndicator = document.getElementById('continue-indicator');
         this.choiceContainer = document.getElementById('choice-container');
+        this.menuContainer = document.getElementById('menu-container');
         this.loadingScreen = document.getElementById('loading-screen');
         this.loadingProgress = document.getElementById('loading-progress');
         this.loadingText = document.getElementById('loading-text');
 
         // Audio system
         this.currentMusic = null;
-        this.musicVolume = 0.4;
+        this.musicVolume = 0.3;
         this.isMusicEnabled = true;
+
+        // Load saved audio settings
+        this.loadAudioSettings();
 
         // Initialize
         this.setupEventListeners();
@@ -61,6 +66,34 @@ class VisualNovel {
         this.addTouchAndClickListener('save-btn', () => this.saveGame());
         this.addTouchAndClickListener('load-btn', () => this.loadGame());
         this.addTouchAndClickListener('settings-btn', () => this.showSettings());
+        this.addTouchAndClickListener('persistent-settings-btn', () => this.showSettings());
+        
+        // Settings modal event listeners
+        this.addTouchAndClickListener('modal-close', () => this.closeSettings());
+        this.addTouchAndClickListener('toggle-music-btn', () => this.toggleMusic());
+        this.addTouchAndClickListener('volume-up-btn', () => this.increaseVolume());
+        this.addTouchAndClickListener('volume-down-btn', () => this.decreaseVolume());
+        this.addTouchAndClickListener('skip-low-ending', () => this.skipToEnding('low'));
+        this.addTouchAndClickListener('skip-medium-ending', () => this.skipToEnding('medium'));
+        this.addTouchAndClickListener('skip-high-ending', () => this.skipToEnding('high'));
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('settings-modal');
+            if (e.target === modal) {
+                this.closeSettings();
+            }
+        });
+        
+        // Close modal with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('settings-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    this.closeSettings();
+                }
+            }
+        });
         
         // Enhanced dialogue box interaction with touch support
         if (this.dialogueBox) {
@@ -281,7 +314,7 @@ class VisualNovel {
         return !this.isProcessing && 
                !this.isWaitingForChoice && 
                !this.currentTypewriterInterval &&
-               this.choiceContainer?.classList.contains('hidden') !== false &&
+               (!this.choiceContainer || this.choiceContainer.classList.contains('hidden') || this.choiceContainer.style.display === 'none') &&
                this.dialogueBox?.style.display !== 'none';
     }
 
@@ -362,7 +395,7 @@ class VisualNovel {
                     { character: this.gameState.playerName, text: "It's okay... I don't mind.", portrait: 'player' },
                     { character: 'narrator', text: "The afternoon sun streams through the window, creating a golden halo around both of you." },
                     { character: '', text: "The air feels warm between you two. How do you reply?", choices: [
-                        { text: "Blush and change the subject.", effect: { relationship: 1 } },
+                        { text: "Blush and change the subject.", effect: { relationship: 2 } },
                         { text: "Playfully tease him back.", effect: { relationship: 2 } },
                         { text: "Stay quiet and awkward.", effect: { relationship: 0 } }
                     ] }
@@ -390,7 +423,7 @@ class VisualNovel {
                     { character: 'narrator', text: "His face transforms with relief and joy, like the sun breaking through clouds." },
                     { character: '', text: "How do you respond?", choices: [
                         { text: "Reassure him: 'I came here because you make this place special.'", effect: { relationship: 2 } },
-                        { text: "Laugh softly: 'You're silly, Mahmood.'", effect: { relationship: 0 } },
+                        { text: "Laugh softly: 'You're silly, Mahmood.'", effect: { relationship: 1 } },
                         { text: "Say nothing and look away.", effect: { relationship: -1 } }
                     ] }
                 ]
@@ -431,6 +464,14 @@ class VisualNovel {
         this.currentScene = 0;
         this.currentDialogue = 0;
         this.isWaitingForChoice = false;
+        this.gameEnded = false; // Reset game ended flag for new game
+        
+        // Ensure menu container is visible during gameplay
+        if (this.menuContainer) {
+            this.menuContainer.style.display = 'flex';
+            this.menuContainer.classList.remove('hidden');
+        }
+        
         this.showScene();
     }
 
@@ -444,6 +485,13 @@ class VisualNovel {
                 this.gameState = { ...this.gameState, ...gameData.state };
                 this.titleScreen?.classList.add('hidden');
                 this.isWaitingForChoice = false;
+                
+                // Ensure menu container is visible during gameplay
+                if (this.menuContainer) {
+                    this.menuContainer.style.display = 'flex';
+                    this.menuContainer.classList.remove('hidden');
+                }
+                
                 this.showScene();
             } else {
                 this.startGame();
@@ -479,6 +527,11 @@ class VisualNovel {
     }
 
     showDialogue() {
+        // Prevent dialogue from running after game has ended
+        if (this.gameEnded) {
+            return;
+        }
+        
         if (this.currentScene >= this.story.length) {
             this.showEnding();
             return;
@@ -668,7 +721,7 @@ class VisualNovel {
     }
 
     nextDialogue() {
-        if (this.isProcessing || this.isWaitingForChoice) return;
+        if (this.isProcessing || this.isWaitingForChoice || this.gameEnded) return;
         
         this.isProcessing = true;
         
@@ -962,6 +1015,27 @@ class VisualNovel {
     }
 
     showEnding() {
+        // Set game ended flag to prevent further dialogue
+        this.gameEnded = true;
+        
+        // Clear any active typewriter intervals
+        if (this.currentTypewriterInterval) {
+            clearInterval(this.currentTypewriterInterval);
+            this.currentTypewriterInterval = null;
+        }
+        
+        // Clear any event handlers that might interfere
+        if (this.dialogueBox) {
+            this.dialogueBox.onclick = null;
+        }
+        document.onkeydown = null;
+        
+        // Hide choice container to ensure canAdvanceDialogue works
+        if (this.choiceContainer) {
+            this.choiceContainer.style.display = 'none';
+            this.choiceContainer.classList.add('hidden');
+        }
+        
         // Determine ending based on relationship level
         const relationshipLevel = this.gameState.relationship;
         let endingType = 'low'; // Default to low ending
@@ -1000,10 +1074,14 @@ class VisualNovel {
     }
 
     showEndingSequence(endingType) {
-        // Clear any existing event handlers to prevent conflicts
+        // Ensure dialogue box is visible for ending sequence
         if (this.dialogueBox) {
+            this.dialogueBox.style.display = 'block';
+            this.dialogueBox.classList.remove('hidden');
             this.dialogueBox.onclick = null;
         }
+        
+        // Clear any existing event handlers to prevent conflicts
         document.onkeydown = null;
         
         const endings = {
@@ -1048,8 +1126,10 @@ class VisualNovel {
         let currentDialogue = 0;
 
         const showNextDialogue = () => {
+            console.log(`showNextDialogue called: currentDialogue=${currentDialogue}, total=${endingDialogues.length}, endingType=${endingType}`);
             if (currentDialogue < endingDialogues.length) {
                 const dialogue = endingDialogues[currentDialogue];
+                console.log(`Showing dialogue ${currentDialogue}:`, dialogue);
                 
                 // Show character portrait if specified
                 this.showCharacter(dialogue.portrait);
@@ -1070,8 +1150,10 @@ class VisualNovel {
 
                 // Wait for user input to continue
                 const waitForContinue = () => {
+                    console.log(`waitForContinue: canAdvance=${this.canAdvanceDialogue()}, isProcessing=${this.isProcessing}, isWaitingForChoice=${this.isWaitingForChoice}, currentTypewriterInterval=${!!this.currentTypewriterInterval}`);
                     if (this.canAdvanceDialogue()) {
                         const continueHandler = () => {
+                            console.log(`continueHandler called for dialogue ${currentDialogue-1}`);
                             // Clear handlers before proceeding
                             if (this.dialogueBox) {
                                 this.dialogueBox.onclick = null;
@@ -1095,6 +1177,7 @@ class VisualNovel {
                 };
                 waitForContinue();
             } else {
+                console.log(`All dialogues finished for ${endingType} ending, showing letter`);
                 // Clear all handlers before showing letter
                 if (this.dialogueBox) {
                     this.dialogueBox.onclick = null;
@@ -1103,6 +1186,7 @@ class VisualNovel {
                 
                 // Show the ending letter before restart option
                 setTimeout(() => {
+                    console.log(`Calling showEndingLetter for ${endingType}`);
                     this.showEndingLetter(endingType);
                 }, 1000);
             }
@@ -1112,7 +1196,33 @@ class VisualNovel {
     }
 
     showRestartOption() {
-        this.typewriterEffect("✨ Thank you for playing! Would you like to start a new story?");
+        // Clear any existing event handlers to prevent conflicts
+        if (this.dialogueBox) {
+            this.dialogueBox.onclick = null;
+        }
+        document.onkeydown = null;
+        
+        // Ensure letter display is hidden before showing restart option
+        const letterDisplay = document.getElementById('letter-display');
+        if (letterDisplay) {
+            letterDisplay.classList.remove('visible');
+            letterDisplay.classList.add('hidden');
+        }
+        
+        // Show dialogue box again for the restart message
+        if (this.dialogueBox) {
+            this.dialogueBox.style.display = 'block';
+        }
+        
+        // Set the restart message directly without typewriter effect to avoid handler conflicts
+        if (this.dialogueText) {
+            this.dialogueText.textContent = "✨ Thank you for playing! Would you like to start a new story?";
+        }
+        
+        // Hide continue indicator since we're showing choices
+        if (this.continueIndicator) {
+            this.continueIndicator.style.display = 'none';
+        }
 
         const choiceButtons = document.querySelectorAll('.choice-btn');
         if (choiceButtons[0]) {
@@ -1230,38 +1340,48 @@ Forever and always yours,`
         }
         this.showCharacter(null); // Hide characters
 
+        // Set up close functionality immediately (don't wait for typewriter to finish)
+        const closeHandler = () => {
+            letterDisplay.classList.remove('visible');
+            letterDisplay.classList.add('hidden');
+            
+            // Clear all event handlers
+            if (closeButton) {
+                closeButton.onclick = null;
+            }
+            letterDisplay.onclick = null;
+            document.onkeydown = null;
+            
+            // Show restart option after closing letter
+            setTimeout(() => {
+                this.showRestartOption();
+            }, 500);
+        };
+
+        // Set up close button
+        if (closeButton) {
+            closeButton.onclick = closeHandler;
+        }
+
+        // Allow clicking anywhere on letter to close
+        letterDisplay.onclick = (e) => {
+            if (e.target === letterDisplay) {
+                closeHandler();
+            }
+        };
+
+        // Allow ESC key to close
+        document.onkeydown = (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                closeHandler();
+            }
+        };
+
         // Start typewriter effect for letter content
         this.typewriterInLetter('letter-text', letter.text, () => {
-            // After letter is fully typed, set up close functionality
-            const closeHandler = () => {
-                letterDisplay.classList.remove('visible');
-                letterDisplay.classList.add('hidden');
-                
-                // Show restart option after closing letter
-                setTimeout(() => {
-                    this.showRestartOption();
-                }, 500);
-            };
-
-            // Set up close button
-            if (closeButton) {
-                closeButton.onclick = closeHandler;
-            }
-
-            // Allow clicking anywhere on letter to close
-            letterDisplay.onclick = (e) => {
-                if (e.target === letterDisplay) {
-                    closeHandler();
-                }
-            };
-
-            // Allow ESC key to close
-            document.onkeydown = (e) => {
-                if (e.key === 'Escape') {
-                    e.preventDefault();
-                    closeHandler();
-                }
-            };
+            // Letter typing is complete - no additional action needed
+            console.log('Letter typing completed');
         });
     }
 
@@ -1301,18 +1421,95 @@ Forever and always yours,`
     }
 
     showSettings() {
+        const modal = document.getElementById('settings-modal');
+        
+        if (!modal) {
+            console.error('Settings modal not found!');
+            return;
+        }
+        
         const musicStatus = this.isMusicEnabled ? 'ON' : 'OFF';
         const volumePercent = Math.round(this.musicVolume * 100);
         
-        const settingsMessage = `🎵 Music Settings 🎵\n\n` +
-            `Music: ${musicStatus}\n` +
-            `Volume: ${volumePercent}%\n\n` +
-            `Commands:\n` +
-            `• Press 'M' to toggle music\n` +
-            `• Press '+' to increase volume\n` +
-            `• Press '-' to decrease volume`;
+        // Update the music status display
+        const musicStatusEl = document.getElementById('music-status');
+        const volumeLevelEl = document.getElementById('volume-level');
+        
+        if (musicStatusEl) musicStatusEl.textContent = musicStatus;
+        if (volumeLevelEl) volumeLevelEl.textContent = `${volumePercent}%`;
+        
+        modal.classList.remove('hidden');
+    }
+
+    closeSettings() {
+        const modal = document.getElementById('settings-modal');
+        modal.classList.add('hidden');
+    }
+
+    increaseVolume() {
+        if (this.musicVolume < 1) {
+            this.setMusicVolume(Math.min(1, this.musicVolume + 0.1));
+            this.saveAudioSettings();
             
-        alert(settingsMessage);
+            // Update the display if settings modal is open
+            const modal = document.getElementById('settings-modal');
+            if (!modal.classList.contains('hidden')) {
+                document.getElementById('volume-level').textContent = `${Math.round(this.musicVolume * 100)}%`;
+            }
+        }
+    }
+
+    decreaseVolume() {
+        if (this.musicVolume > 0) {
+            this.setMusicVolume(Math.max(0, this.musicVolume - 0.1));
+            this.saveAudioSettings();
+            
+            // Update the display if settings modal is open
+            const modal = document.getElementById('settings-modal');
+            if (!modal.classList.contains('hidden')) {
+                document.getElementById('volume-level').textContent = `${Math.round(this.musicVolume * 100)}%`;
+            }
+        }
+    }
+
+    skipToEnding(endingType) {
+        // Close settings modal
+        this.closeSettings();
+        
+        // Clear any existing game state
+        this.currentDialogueIndex = 0;
+        this.currentScene = 'ending';
+        
+        // Show dialogue box for ending sequence
+        const dialogueBox = document.getElementById('dialogue-box');
+        if (dialogueBox) dialogueBox.style.display = 'block';
+        
+        const choiceContainer = document.getElementById('choice-container');
+        if (choiceContainer) choiceContainer.style.display = 'none';
+        
+        const characterLeft = document.getElementById('character-left');
+        if (characterLeft) characterLeft.style.display = 'none';
+        
+        const characterRight = document.getElementById('character-right');
+        if (characterRight) characterRight.style.display = 'none';
+        
+        // Set the relationship level based on ending type
+        switch(endingType) {
+            case 'low':
+                this.gameState.relationship = 1; // Low relationship
+                break;
+            case 'medium':
+                this.gameState.relationship = 4; // Medium relationship
+                break;
+            case 'high':
+                this.gameState.relationship = 8; // High relationship
+                break;
+        }
+        
+        console.log(`Skipping to ${endingType} ending with relationship level: ${this.gameState.relationship}`);
+        
+        // Start the ending sequence
+        this.showEnding();
     }
 
     // Audio Management Methods
@@ -1387,6 +1584,7 @@ Forever and always yours,`
         if (this.currentMusic) {
             this.currentMusic.volume = this.musicVolume;
         }
+        this.saveAudioSettings();
     }
 
     toggleMusic() {
@@ -1400,7 +1598,41 @@ Forever and always yours,`
                 this.playMusic(currentScene.music);
             }
         }
+        this.saveAudioSettings();
+        
+        // Update the display if settings modal is open
+        const modal = document.getElementById('settings-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            document.getElementById('music-status').textContent = this.isMusicEnabled ? 'ON' : 'OFF';
+        }
+        
         return this.isMusicEnabled;
+    }
+
+    // Save audio settings to localStorage
+    saveAudioSettings() {
+        const audioSettings = {
+            musicVolume: this.musicVolume,
+            isMusicEnabled: this.isMusicEnabled
+        };
+        localStorage.setItem('flowerNovelAudioSettings', JSON.stringify(audioSettings));
+    }
+
+    // Load audio settings from localStorage
+    loadAudioSettings() {
+        try {
+            const savedSettings = localStorage.getItem('flowerNovelAudioSettings');
+            if (savedSettings) {
+                const audioSettings = JSON.parse(savedSettings);
+                this.musicVolume = audioSettings.musicVolume || 0.3;
+                this.isMusicEnabled = audioSettings.isMusicEnabled !== undefined ? audioSettings.isMusicEnabled : true;
+            }
+        } catch (error) {
+            console.log('Could not load audio settings:', error);
+            // Use default values
+            this.musicVolume = 0.3;
+            this.isMusicEnabled = true;
+        }
     }
 }
 
