@@ -56,9 +56,17 @@ class VisualNovel {
     }
 
     setupEventListeners() {
-        // Mobile detection
+        // Enhanced mobile detection for better iOS compatibility
         this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        this.isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        this.isTouch = ('ontouchstart' in window) || 
+                      (navigator.maxTouchPoints > 0) || 
+                      (navigator.msMaxTouchPoints > 0) ||
+                      (window.DocumentTouch && document instanceof window.DocumentTouch);
+        
+        // Force touch mode for known mobile devices even if touch detection fails
+        if (this.isMobile && !this.isTouch) {
+            this.isTouch = true;
+        }
         
         // Button event listeners with touch support
         this.addTouchAndClickListener('start-btn', () => this.startGame());
@@ -172,26 +180,83 @@ class VisualNovel {
         if (!element) return;
 
         if (this.isTouch) {
-            // Touch events for mobile
+            // Enhanced touch events for mobile with better iOS compatibility
+            let touchStarted = false;
+            let touchStartPos = null;
+            
             element.addEventListener('touchstart', (e) => {
-                e.preventDefault();
+                touchStarted = true;
+                touchStartPos = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
                 element.classList.add('active');
+                // Only prevent default for specific cases to avoid iOS issues
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                }
             }, { passive: false });
             
+            element.addEventListener('touchmove', (e) => {
+                if (touchStarted && touchStartPos) {
+                    const currentTouch = e.touches[0];
+                    const deltaX = Math.abs(currentTouch.clientX - touchStartPos.x);
+                    const deltaY = Math.abs(currentTouch.clientY - touchStartPos.y);
+                    
+                    // If moved too much, cancel the touch
+                    if (deltaX > 10 || deltaY > 10) {
+                        touchStarted = false;
+                        element.classList.remove('active');
+                    }
+                }
+            }, { passive: true });
+            
             element.addEventListener('touchend', (e) => {
-                e.preventDefault();
                 element.classList.remove('active');
-                callback();
+                if (touchStarted && e.changedTouches.length === 1) {
+                    e.preventDefault();
+                    touchStarted = false;
+                    callback();
+                }
+                touchStarted = false;
             }, { passive: false });
             
             element.addEventListener('touchcancel', (e) => {
                 element.classList.remove('active');
-            });
+                touchStarted = false;
+            }, { passive: true });
         } else {
             // Click events for desktop
             element.addEventListener('click', callback);
         }
-    }
+        
+        // Fallback click handler for devices that support both touch and mouse
+         if (this.isTouch) {
+             element.addEventListener('click', (e) => {
+                 // Prevent double-firing on touch devices
+                 e.preventDefault();
+             });
+         }
+     }
+
+     removeTouchAndClickListener(element) {
+         if (typeof element === 'string') {
+             element = document.getElementById(element);
+         }
+         
+         if (!element) return element;
+
+         // Clone the element to remove all event listeners
+         const newElement = element.cloneNode(true);
+         element.parentNode.replaceChild(newElement, element);
+         
+         // Update the dialogueBox reference if this is the dialogue box
+         if (element === this.dialogueBox) {
+             this.dialogueBox = newElement;
+         }
+         
+         return newElement;
+     }
 
     // Setup swipe gestures for mobile navigation
     setupSwipeGestures() {
